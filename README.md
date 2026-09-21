@@ -4,7 +4,7 @@ A portfolio-grade IT Asset & Inventory Management platform for IT Operations, IT
 
 The project supports two operating modes:
 
-- **Portfolio Demo Mode** — public static deployment with realistic asset, employee, warranty, maintenance, software, and assignment data.
+- **Browser Workspace Mode** — public browser application with realistic asset, employee, warranty, maintenance, software, and assignment data.
 - **Live Backend Mode** — local FastAPI + SQLite backend with persistent asset lifecycle records.
 
 ## Core Features
