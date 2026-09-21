@@ -101,11 +101,11 @@ def seed(conn: sqlite3.Connection) -> None:
         conn.executemany(
             "INSERT INTO people(id,name,department,email,location) VALUES(?,?,?,?,?)",
             [
-                (1,"Alyssa Reyes","Finance","alyssa.reyes@contoso.local","Main Office"),
+                (1,"Adrian Reyes","Finance","alyssa.reyes@contoso.local","Main Office"),
                 (2,"Marco Santos","Operations","marco.santos@contoso.local","Main Office"),
-                (3,"Nina Cruz","Human Resources","nina.cruz@contoso.local","Main Office"),
+                (3,"Nico Cruz","Human Resources","nina.cruz@contoso.local","Main Office"),
                 (4,"Daniel Lee","Sales","daniel.lee@contoso.local","Branch Office"),
-                (5,"Mika Torres","Marketing","mika.torres@contoso.local","Main Office"),
+                (5,"Miguel Torres","Marketing","mika.torres@contoso.local","Main Office"),
                 (10,"Jim Camus","IT","jim.camus@contoso.local","Main Office"),
             ],
         )
