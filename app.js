@@ -20,13 +20,13 @@
   function daysUntil(iso){if(!iso)return null;return Math.ceil((new Date(iso)-Date.now())/86400000)}
   function warrantyInfo(asset){const d=daysUntil(asset.warranty_expiry);if(d===null)return {level:"bad",label:"Unknown"};if(d<0)return {level:"bad",label:"Expired "+Math.abs(d)+"d ago"};if(d<=45)return {level:"warn",label:d+"d remaining"};return {level:"ok",label:d+"d remaining"}}
   function toast(title,msg="",type="info"){const n=document.createElement("div");n.className="toast "+type;n.innerHTML="<strong>"+esc(title)+"</strong><span>"+esc(msg)+"</span>";$("toastRegion").appendChild(n);setTimeout(()=>n.remove(),4200)}
-  function persistDemo(){if(state.mode==="demo")sessionStorage.setItem("asset_demo_state",JSON.stringify(state.data))}
-  function cloneDemo(){const saved=sessionStorage.getItem("asset_demo_state");if(saved){try{return JSON.parse(saved)}catch{}}return JSON.parse(JSON.stringify(window.ASSET_DEMO))}
+  function persistDemo(){if(state.mode==="demo")localStorage.setItem("asset_demo_state",JSON.stringify(state.data))}
+  function cloneDemo(){const saved=localStorage.getItem("asset_demo_state");if(saved){try{return JSON.parse(saved)}catch{}}return JSON.parse(JSON.stringify(window.ASSET_DEMO))}
   async function fetchJson(path,options={}){const c=new AbortController(),timer=setTimeout(()=>c.abort(),options.timeout||9000);try{const r=await fetch(state.backendUrl.replace(/\/$/,"")+path,{...options,signal:c.signal,headers:{"Content-Type":"application/json",...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.detail||d.error||"Request failed ("+r.status+")");return d}finally{clearTimeout(timer)}}
   function setMode(kind,title,detail){$("modeDot").className="ops-dot"+(kind?" "+kind:"");$("modeTitle").textContent=title;$("modeDetail").textContent=detail}
 
   async function loadData(showToast=false){
-    if(state.mode==="demo"){state.data=cloneDemo();state.lastRefresh=new Date();setMode("","Demo workspace","Portfolio inventory data");renderAll();if(showToast)toast("Inventory refreshed","Demo asset data reloaded.");return}
+    if(state.mode==="demo"){state.data=cloneDemo();state.lastRefresh=new Date();setMode("","Browser workspace","Saved locally in this browser");renderAll();if(showToast)toast("Inventory refreshed","Browser-saved asset data loaded.");return}
     setMode("","Connecting…",state.backendUrl);
     try{state.data=await fetchJson("/api/bootstrap");state.lastRefresh=new Date();setMode("live","Live inventory",state.backendUrl.replace(/^https?:\/\//,""));renderAll();if(showToast)toast("Inventory refreshed","Latest persistent asset records loaded.")}
     catch(e){setMode("error","Backend unavailable",state.backendUrl.replace(/^https?:\/\//,""));toast("Could not reach backend",e.message,"error");if(!state.data){state.data=cloneDemo();renderAll()}}
@@ -138,7 +138,7 @@
   $("newAssetForm").addEventListener("submit",async e=>{
     e.preventDefault();const body={hostname:$("newHostname").value.trim(),type:$("newAssetType").value.trim(),serial:$("newSerial").value.trim(),location:$("newLocation").value.trim(),purchase_date:$("newPurchaseDate").value,warranty_expiry:$("newWarranty").value};
     if(state.mode==="live"){try{const a=await fetchJson("/api/assets",{method:"POST",body:JSON.stringify(body)});$("newAssetDialog").close();await loadData();toast("Asset added",a.tag+" added to inventory.")}catch(err){toast("Could not add asset",err.message,"error")}return}
-    const id=Math.max(0,...state.data.assets.map(a=>a.id))+1,tag="AST-"+(1000+id);const a={id,tag,...body,status:"Available",owner_id:null,owner:"Unassigned",department:"IT",updated_at:new Date().toISOString(),specs:{}};state.data.assets.push(a);addAudit(a,"Asset created",tag+" added to inventory.");persistDemo();$("newAssetDialog").close();renderAll();toast("Asset added",tag+" added to demo inventory.");
+    const id=Math.max(0,...state.data.assets.map(a=>a.id))+1,tag="AST-"+(1000+id);const a={id,tag,...body,status:"Available",owner_id:null,owner:"Unassigned",department:"IT",updated_at:new Date().toISOString(),specs:{}};state.data.assets.push(a);addAudit(a,"Asset created",tag+" added to inventory.");persistDemo();$("newAssetDialog").close();renderAll();toast("Asset added",tag+" saved in this browser.");
   });
 
   $("exportCsvButton").addEventListener("click",()=>{const rows=[["Asset Tag","Hostname","Type","Serial","Status","Owner","Department","Location","Purchase Date","Warranty Expiry"]];(state.data?.assets||[]).forEach(a=>rows.push([a.tag,a.hostname,a.type,a.serial,a.status,a.owner,a.department,a.location,a.purchase_date,a.warranty_expiry]));const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replaceAll('"','""')+'"').join(",")).join("\r\n"),blob=new Blob([csv],{type:"text/csv"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="it-asset-inventory.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
