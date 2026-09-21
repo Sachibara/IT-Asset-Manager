@@ -4,11 +4,11 @@ window.ASSET_DEMO = (() => {
   const ago = (n) => new Date(now - n * 86400000).toISOString();
 
   const people = [
-    {id:1,name:"Adrian Reyes",department:"Finance",email:"alyssa.reyes@contoso.local",location:"Main Office"},
+    {id:1,name:"Adrian Reyes",department:"Finance",email:"adrian.reyes@contoso.local",location:"Main Office"},
     {id:2,name:"Marco Santos",department:"Operations",email:"marco.santos@contoso.local",location:"Main Office"},
-    {id:3,name:"Nico Cruz",department:"Human Resources",email:"nina.cruz@contoso.local",location:"Main Office"},
+    {id:3,name:"Nico Cruz",department:"Human Resources",email:"nico.cruz@contoso.local",location:"Main Office"},
     {id:4,name:"Daniel Lee",department:"Sales",email:"daniel.lee@contoso.local",location:"Branch Office"},
-    {id:5,name:"Miguel Torres",department:"Marketing",email:"mika.torres@contoso.local",location:"Main Office"},
+    {id:5,name:"Miguel Torres",department:"Marketing",email:"miguel.torres@contoso.local",location:"Main Office"},
     {id:10,name:"Jim Camus",department:"IT",email:"jim.camus@contoso.local",location:"Main Office"}
   ];
 
