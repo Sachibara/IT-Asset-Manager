@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d1b2a">
+  <meta name="description" content="IT Asset Manager - asset lifecycle, inventory, assignment, warranty, maintenance, and software license tracking.">
+  <title>IT Asset Manager</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./demo-data.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">IAM</div>
+      <div>
+        <strong>Asset Control</strong>
+        <span>IT Inventory Operations</span>
+      </div>
+    </div>
+
+    <div class="ops-badge">
+      <span class="ops-dot" id="modeDot"></span>
+      <div><strong id="modeTitle">Demo workspace</strong><small id="modeDetail">Portfolio inventory data</small></div>
+      <button class="link-btn" id="connectionButton">Configure</button>
+    </div>
+
+    <nav class="side-nav">
+      <button class="nav-item active" data-page="dashboard"><span>▦</span>Dashboard</button>
+      <button class="nav-item" data-page="assets"><span>▣</span>Assets <b id="assetCountBadge">0</b></button>
+      <button class="nav-item" data-page="assignments"><span>⇄</span>Assignments</button>
+      <button class="nav-item" data-page="maintenance"><span>⌁</span>Maintenance</button>
+      <button class="nav-item" data-page="warranty"><span>◷</span>Warranty</button>
+      <button class="nav-item" data-page="software"><span>◫</span>Software</button>
+      <button class="nav-item" data-page="people"><span>◎</span>People</button>
+      <button class="nav-item" data-page="audit"><span>≡</span>Audit Log</button>
+      <button class="nav-item" data-page="about"><span>ⓘ</span>About</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span>Workspace</span>
+      <strong>IT Operations</strong>
+      <small>Lifecycle & inventory control</small>
+    </div>
+  </aside>
+
+  <section class="workspace">
+    <header class="topbar">
+      <div class="top-left">
+        <button class="menu-btn" id="menuButton">☰</button>
+        <div><p id="pageEyebrow">Operations overview</p><h1 id="pageTitle">Dashboard</h1></div>
+      </div>
+      <div class="top-actions">
+        <div class="last-sync"><span>Last sync</span><strong id="lastRefresh">—</strong></div>
+        <button class="btn secondary" id="refreshButton">Refresh</button>
+        <button class="btn primary" data-go="assets">View inventory</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="page active" data-page-panel="dashboard">
+        <div class="inventory-hero">
+          <div>
+            <p class="eyebrow">Asset estate</p>
+            <h2>Know where every device is, who has it, and what needs attention.</h2>
+            <p>Track hardware lifecycle, ownership, warranty, maintenance, software, and operational risk from one asset-control workspace.</p>
+            <div class="hero-actions">
+              <button class="btn primary" data-go="assets">Open inventory</button>
+              <button class="btn secondary" data-go="assignments">Manage assignments</button>
+            </div>
+          </div>
+          <div class="hero-label">
+            <div class="barcode" aria-hidden="true"></div>
+            <strong id="heroAssetTag">AST-0000</strong>
+            <span>Inventory control</span>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="metric-card"><span>Total assets</span><strong id="statTotal">0</strong><small>Managed inventory</small></article>
+          <article class="metric-card"><span>Assigned</span><strong id="statAssigned">0</strong><small>In active use</small></article>
+          <article class="metric-card"><span>Available</span><strong id="statAvailable">0</strong><small>Ready for deployment</small></article>
+          <article class="metric-card"><span>Warranty risk</span><strong id="statWarranty">0</strong><small>Expiring / expired</small></article>
+          <article class="metric-card"><span>Maintenance</span><strong id="statMaintenance">0</strong><small>Needs attention</small></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Lifecycle</p><h3>Asset state distribution</h3></div></div>
+            <div class="lifecycle-board" id="lifecycleBoard"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Attention queue</p><h3>Operational risk</h3></div><button class="link-btn" data-go="warranty">Review</button></div>
+            <div class="attention-list" id="attentionList"></div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Inventory</p><h3>Recently updated</h3></div><button class="link-btn" data-go="assets">View all</button></div>
+            <div class="compact-list" id="recentAssets"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Departments</p><h3>Asset allocation</h3></div></div>
+            <div class="allocation-bars" id="departmentBars"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" data-page-panel="assets">
+        <div class="section-head">
+          <div><p class="eyebrow">Inventory control</p><h2>Assets</h2><p>Search, classify, inspect, and maintain the complete IT asset estate.</p></div>
+          <button class="btn primary" id="newAssetButton">Add asset</button>
+        </div>
+
+        <article class="panel">
+          <div class="toolbar">
+            <div class="search"><span>⌕</span><input id="assetSearch" placeholder="Search asset tag, hostname, serial, user, type, or location"></div>
+            <select id="assetStatusFilter"><option value="all">All statuses</option><option>Assigned</option><option>Available</option><option>In Repair</option><option>Retired</option><option>Lost</option></select>
+            <select id="assetTypeFilter"><option value="all">All types</option></select>
+            <button class="btn secondary" id="exportCsvButton">Export CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Asset</th><th>Type</th><th>Owner</th><th>Department</th><th>Status</th><th>Warranty</th><th>Location</th><th>Updated</th></tr></thead>
+              <tbody id="assetTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="page" data-page-panel="assignments">
+        <div class="section-head"><div><p class="eyebrow">Custody</p><h2>Assignments</h2><p>Check devices in and out while preserving complete ownership history.</p></div></div>
+        <div class="assignment-layout">
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Current custody</p><h3>Assigned assets</h3></div></div>
+            <div class="assignment-grid" id="assignmentGrid"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="eyebrow">Available stock</p><h3>Ready for deployment</h3></div></div>
+            <div class="assignment-grid" id="availableGrid"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" data-page-panel="maintenance">
+        <div class="section-head"><div><p class="eyebrow">Service history</p><h2>Maintenance</h2><p>Track faults, repairs, preventive maintenance, and service outcomes by asset.</p></div></div>
+        <div class="maintenance-grid" id="maintenanceGrid"></div>
+      </section>
+
+      <section class="page" data-page-panel="warranty">
+        <div class="section-head"><div><p class="eyebrow">Lifecycle risk</p><h2>Warranty & Expiry</h2><p>Identify devices approaching end-of-warranty and plan refresh activity before failures become urgent.</p></div></div>
+        <div class="warranty-grid" id="warrantyGrid"></div>
+      </section>
+
+      <section class="page" data-page-panel="software">
+        <div class="section-head"><div><p class="eyebrow">Entitlements</p><h2>Software & Licenses</h2><p>Track software titles, license counts, assignments, expiry dates, and compliance.</p></div></div>
+        <div class="software-grid" id="softwareGrid"></div>
+      </section>
+
+      <section class="page" data-page-panel="people">
+        <div class="section-head"><div><p class="eyebrow">Ownership</p><h2>People & Departments</h2><p>Understand who owns equipment and how IT inventory is distributed across the organization.</p></div></div>
+        <div class="people-grid" id="peopleGrid"></div>
+      </section>
+
+      <section class="page" data-page-panel="audit">
+        <div class="section-head"><div><p class="eyebrow">Traceability</p><h2>Audit Log</h2><p>Review lifecycle changes, assignments, repairs, and inventory updates.</p></div></div>
+        <article class="panel"><div class="audit-list" id="auditList"></div></article>
+      </section>
+
+      <section class="page" data-page-panel="about">
+        <div class="section-head"><div><p class="eyebrow">Project architecture</p><h2>About IT Asset Manager</h2><p>A practical IT operations system covering asset lifecycle, assignment, maintenance, warranty, licensing, and auditability.</p></div></div>
+        <div class="about-grid">
+          <article class="panel about-wide">
+            <p class="eyebrow">Operating model</p><h3>Public demo + persistent local backend</h3>
+            <div class="architecture"><div><strong>Operations UI</strong><span>Inventory & lifecycle control</span></div><b>→</b><div><strong>FastAPI</strong><span>REST asset services</span></div><b>→</b><div><strong>SQLite</strong><span>Persistent asset records</span></div></div>
+          </article>
+          <article class="panel"><p class="eyebrow">IT operations skills</p><div class="tag-cloud"><span>Asset Lifecycle</span><span>Inventory</span><span>Warranty</span><span>Maintenance</span><span>Assignment</span><span>Audit</span><span>Software Licensing</span></div></article>
+          <article class="panel"><p class="eyebrow">Development skills</p><div class="tag-cloud"><span>Python</span><span>FastAPI</span><span>SQLite</span><span>REST API</span><span>JavaScript</span><span>CSV Export</span></div></article>
+        </div>
+      </section>
+    </main>
+  </section>
+</div>
+
+<dialog id="assetDialog">
+  <form method="dialog" class="dialog-card" id="assetForm">
+    <div class="dialog-head"><div><p class="eyebrow">Asset record</p><h2 id="assetDialogTitle">Asset details</h2></div><button class="icon-btn" value="cancel">×</button></div>
+    <div class="asset-dialog-grid">
+      <div class="asset-label-preview">
+        <div class="barcode large"></div>
+        <strong id="detailAssetTag">AST-0000</strong>
+        <span id="detailHostname">—</span>
+      </div>
+      <div class="asset-fields">
+        <label><span>Hostname</span><input id="editHostname"></label>
+        <label><span>Asset type</span><input id="editType"></label>
+        <label><span>Serial number</span><input id="editSerial"></label>
+        <label><span>Status</span><select id="editStatus"><option>Assigned</option><option>Available</option><option>In Repair</option><option>Retired</option><option>Lost</option></select></label>
+        <label><span>Owner</span><select id="editOwner"></select></label>
+        <label><span>Location</span><input id="editLocation"></label>
+        <label><span>Purchase date</span><input type="date" id="editPurchaseDate"></label>
+        <label><span>Warranty expiry</span><input type="date" id="editWarranty"></label>
+      </div>
+    </div>
+    <div class="detail-sections">
+      <div><h4>Specifications</h4><div class="spec-grid" id="assetSpecs"></div></div>
+      <div><h4>Maintenance history</h4><div class="timeline" id="assetMaintenanceTimeline"></div></div>
+      <div><h4>Audit history</h4><div class="timeline" id="assetAuditTimeline"></div></div>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn secondary" value="cancel">Close</button>
+      <button class="btn primary" type="button" id="saveAssetButton">Save changes</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="newAssetDialog">
+  <form method="dialog" class="dialog-card small-dialog" id="newAssetForm">
+    <div class="dialog-head"><div><p class="eyebrow">Inventory intake</p><h2>Add asset</h2></div><button class="icon-btn" value="cancel">×</button></div>
+    <div class="form-grid">
+      <label><span>Hostname</span><input id="newHostname" required></label>
+      <label><span>Type</span><input id="newAssetType" required placeholder="Laptop, Switch, Monitor..."></label>
+      <label><span>Serial number</span><input id="newSerial" required></label>
+      <label><span>Location</span><input id="newLocation" required></label>
+      <label><span>Purchase date</span><input type="date" id="newPurchaseDate"></label>
+      <label><span>Warranty expiry</span><input type="date" id="newWarranty"></label>
+    </div>
+    <div class="dialog-actions"><button class="btn secondary" value="cancel">Cancel</button><button class="btn primary" type="submit">Add to inventory</button></div>
+  </form>
+</dialog>
+
+<dialog id="connectionDialog">
+  <form method="dialog" class="dialog-card small-dialog">
+    <div class="dialog-head"><div><p class="eyebrow">Data source</p><h2>Connection settings</h2></div><button class="icon-btn" value="cancel">×</button></div>
+    <label class="radio-card"><input type="radio" name="mode" value="demo" checked><span><strong>Portfolio demo</strong><small>Interactive representative asset data.</small></span></label>
+    <label class="radio-card"><input type="radio" name="mode" value="live"><span><strong>Live backend</strong><small>Connect to the local persistent asset API.</small></span></label>
+    <label><span>Backend URL</span><input id="backendUrlInput" value="http://127.0.0.1:8795"></label>
+    <div class="dialog-actions"><button class="btn secondary" value="cancel">Cancel</button><button class="btn primary" type="button" id="saveConnectionButton">Save</button></div>
+  </form>
+</dialog>
+
+<div class="toast-region" id="toastRegion"></div>
+</body>
+</html>
