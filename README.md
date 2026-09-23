@@ -7,6 +7,11 @@ The project supports two operating modes:
 - **Browser Workspace Mode** — public browser application with realistic asset, employee, warranty, maintenance, software, and assignment data.
 - **Live Backend Mode** — local FastAPI + SQLite backend with persistent asset lifecycle records.
 
+
+## Public App
+
+**Live app:** https://sachibara.github.io/IT-Asset-Manager/
+
 ## Core Features
 
 - Hardware asset inventory
