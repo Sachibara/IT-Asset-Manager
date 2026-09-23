@@ -1,3 +1,5 @@
+> **Consolidated module:** This project is preserved as source/history, but its public product experience is now part of **[OpsFusion](https://sachibara.github.io/HelpDesk-Pro/)**. The consolidation reduces duplicate portfolio projects and connects this capability to a shared enterprise data/workflow model.
+
 # IT Asset Manager
 
 A portfolio-grade IT Asset & Inventory Management platform for IT Operations, IT Service Desk, Desktop Support, System Administration, and Infrastructure teams.
